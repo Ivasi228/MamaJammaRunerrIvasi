@@ -1,0 +1,61 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+public class GameManager : MonoBehaviour
+{
+
+    public GameObject obstacle;
+    public Transform spawnPoint;
+    int score = 0;
+
+    public TextMeshProUGUI scoreText;
+    public GameObject playButton;
+    public GameObject player;
+    public TextMeshProUGUI MaxScore;
+    public float minRange;
+    public float maxRange;
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        MaxScore.text = PlayerPrefs.GetInt("Score").ToString();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    IEnumerator SpawnObstacles()
+    {
+        while (true)
+        {
+            float waitTime = Random.Range(minRange, maxRange);
+
+            yield return new WaitForSeconds(waitTime);
+
+            Instantiate(obstacle, spawnPoint.position, Quaternion.identity);
+
+        }
+    }
+
+    void ScoreUp()
+    {
+        score++;
+        scoreText.text = score.ToString();
+    }
+
+
+    public void GameStart()
+    {
+        player.SetActive(true);
+        playButton.SetActive(false);
+
+        StartCoroutine("SpawnObstacles");
+        InvokeRepeating("ScoreUp", 2f, 1f);
+    }
+}
